@@ -1,7 +1,9 @@
 package com.xuecheng.manage_cms.controller;
 
 import com.xuecheng.api.cms.CmsPageControllerApi;
+import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.request.QueryPageRequest;
+import com.xuecheng.framework.domain.cms.response.CmsPageResult;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.manage_cms.service.PageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +42,16 @@ public class CmsPageController implements CmsPageControllerApi {
         return queryResponseResult;*/
         //调用service
         return pageService.findList(page,size,queryPageRequest);
+    }
+
+    /**
+     * 添加页面
+     * @param cmsPage
+     * @return
+     */
+    @Override
+    public CmsPageResult add(CmsPage cmsPage) {
+        CmsPageResult pageResult = pageService.add(cmsPage);
+        return pageResult;
     }
 }

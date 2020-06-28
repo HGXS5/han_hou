@@ -2,6 +2,7 @@ package com.xuecheng.manage_cms.service;
 
 import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.request.QueryPageRequest;
+import com.xuecheng.framework.domain.cms.response.CmsPageResult;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
@@ -67,5 +68,24 @@ public class PageService {
         queryResult.setTotal(all.getTotalElements());//数据总记录数
         QueryResponseResult queryResponseResult = new QueryResponseResult(CommonCode.SUCCESS,queryResult);
         return queryResponseResult;
+    }
+
+    /**
+     * 添加页面
+     * @param cmsPage
+     * @return
+     */
+    public CmsPageResult add(CmsPage cmsPage){
+        //校验页面是否存在，根据页面名称，站点ID,页面的webPath查询
+        CmsPage isCmsPage = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(cmsPage.getPageName(), cmsPage.getSiteId(), cmsPage.getPageWebPath());
+        if (isCmsPage==null){
+            //添加页面之间由spring data自动生成
+            cmsPage.setPageId(null);
+            //保存页面
+            cmsPageRepository.save(cmsPage);
+            return new CmsPageResult(CommonCode.SUCCESS, cmsPage);
+        }
+        return new CmsPageResult(CommonCode.FAIL,null);
+
     }
 }
