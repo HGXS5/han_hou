@@ -45,6 +45,9 @@ public class PageService {
         Page<CmsPage> all = cmsPageRepository.findAll(pageable);
         QueryResult queryResult = new QueryResult();
         queryResult.setList(all.getContent());//数据列表
+
+
+        int a = 8;
         queryResult.setTotal(all.getTotalElements());//数据总记录数
         QueryResponseResult queryResponseResult = new QueryResponseResult(CommonCode.SUCCESS,queryResult);
         return queryResponseResult;
