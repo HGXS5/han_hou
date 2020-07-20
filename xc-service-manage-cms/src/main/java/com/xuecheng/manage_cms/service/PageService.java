@@ -32,10 +32,13 @@ public class PageService {
      * @return
      */
     public QueryResponseResult findList(int page, int size, QueryPageRequest queryPageRequest){
+        if (queryPageRequest == null) {
+            queryPageRequest = new QueryPageRequest();
+        }
         //条件匹配器
         //页面名称模糊查询，自定义字符串匹配器实现模糊查询
-        ExampleMatcher exampleMatcher =ExampleMatcher
-        .matching().withMatcher("pageAliase", ExampleMatcher.GenericPropertyMatchers.contains());
+        ExampleMatcher exampleMatcher =ExampleMatcher.matching()
+                .withMatcher("pageAliase", ExampleMatcher.GenericPropertyMatchers.contains());
 
         //条件值
         CmsPage cmsPage = new CmsPage();
@@ -46,10 +49,6 @@ public class PageService {
         //页面别名
         if (StringUtils.isNotEmpty(queryPageRequest.getPageAliase())){
             cmsPage.setPageAliase(queryPageRequest.getPageAliase());
-        }
-        //页面名称
-        if (StringUtils.isNotEmpty(queryPageRequest.getPageName())){
-            cmsPage.setPageName(queryPageRequest.getPageName());
         }
         //创建实例条件
         Example<CmsPage> example = Example.of(cmsPage, exampleMatcher);
@@ -63,8 +62,9 @@ public class PageService {
         }
         Pageable pageable = PageRequest.of(page,size);
         Page<CmsPage> all = cmsPageRepository.findAll(example,pageable);
+    System.out.println(all);
         QueryResult queryResult = new QueryResult();
-        queryResult.setList(all.getContent());//数据列表
+        queryResult.setList(all.getContent());//数据列 表
         queryResult.setTotal(all.getTotalElements());//数据总记录数
         QueryResponseResult queryResponseResult = new QueryResponseResult(CommonCode.SUCCESS,queryResult);
         return queryResponseResult;
@@ -86,6 +86,5 @@ public class PageService {
             return new CmsPageResult(CommonCode.SUCCESS, cmsPage);
         }
         return new CmsPageResult(CommonCode.FAIL,null);
-
     }
 }
