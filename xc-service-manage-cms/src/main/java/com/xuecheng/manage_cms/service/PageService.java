@@ -7,8 +7,10 @@ import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.manage_cms.dao.CmsConfigRepository;
 import com.xuecheng.manage_cms.dao.CmsPageRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,6 @@ public class PageService {
         }
         Pageable pageable = PageRequest.of(page,size);
         Page<CmsPage> all = cmsPageRepository.findAll(example,pageable);
-    System.out.println(all);
         QueryResult queryResult = new QueryResult();
         queryResult.setList(all.getContent());//数据列 表
         queryResult.setTotal(all.getTotalElements());//数据总记录数
@@ -134,6 +135,8 @@ public class PageService {
             byId.setPageWebPath(cmsPage.getPageWebPath());
             //更新物理路径
             byId.setPagePhysicalPath(cmsPage.getPagePhysicalPath());
+            //更新数据路径
+            byId.setDataUrl(cmsPage.getDataUrl());
             //执行更新
             CmsPage save = cmsPageRepository.save(byId);
             if (save != null){
@@ -159,5 +162,13 @@ public class PageService {
             return new ResponseResult(CommonCode.SUCCESS);
         }
         return new ResponseResult(CommonCode.FAIL);
+    }
+
+    @Autowired
+    CmsConfigRepository cmsConfigRepository;
+
+    public String getPageHtml(String pageId){
+        //获取页面模型数据
+        return null;
     }
 }
