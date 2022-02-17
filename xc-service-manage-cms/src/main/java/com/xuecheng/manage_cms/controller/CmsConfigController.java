@@ -26,4 +26,5 @@ public class CmsConfigController implements CmsConfigControllerApi {
         return cmsConfigService.getConfigById(id);
     }
 
+
 }
