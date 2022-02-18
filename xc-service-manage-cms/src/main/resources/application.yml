@@ -9,3 +9,14 @@ spring:
       #uri:  mongodb://test:root@129.211.15.108:27017
       #uri:  mongodb://root:123@localhost:27017
       database: xc_cms
+  rabbitmq:
+    host: 47.100.77.11
+    port: 5672
+    username: han
+    password: Han#222
+    virtualHost: /
+
+  freemarker:
+      cache: false  #关闭模板缓存，方便测试
+      settings:
+        template_update_delay: 0

@@ -32,6 +32,8 @@ public class GridFSTest {
     @Autowired
     CmsTemplateRepository cmsTemplateRepository;
     @Autowired
+    CmsConfigRepository cmsConfigRepository;
+    @Autowired
     GridFsTemplate gridFsTemplate;
     @Autowired
     GridFSBucket gridFSBucket;
@@ -49,7 +51,7 @@ public class GridFSTest {
     //查询存入的文件
     @Test
     public void findTest() throws IOException {
-        String fileId = "620db63316dc9026247f211e";
+        String fileId = "620efd4816dc9004b882bbde";
         //根据id查询文件
         GridFSFile gridFSFile = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is(fileId)));
         //打开下载流对象
@@ -66,7 +68,7 @@ public class GridFSTest {
     @Test
     public void testDelFile() throws IOException {
         //根据文件id删除fs.files和fs.chunks中的记录
-        gridFsTemplate.delete(Query.query(Criteria.where("_id").is("620db5ec16dc90240809b68a")));
+        gridFsTemplate.delete(Query.query(Criteria.where("_id").is("620efb6216dc901cf4c1e6ed")));
     }
 
 
@@ -104,17 +106,17 @@ public class GridFSTest {
             //更新cmsPage
             CmsPage findCmsPage = cmsPageRepository.findByPageName(strings[0]+".html");
             if (findCmsPage==null){
+                CmsPage cmsPage = new CmsPage();
+                cmsPage.setSiteId("5a751fab6abb5044e0d19ea1");
+                cmsPage.setTemplateId(templateId);
+                cmsPage.setPageCreateTime(new Date());
+                cmsPage.setPageName(strings[0]+".html");
+                cmsPage.setPageAliase("han_test");
+                cmsPage.setPagePhysicalPath(strings[1]);
+                cmsPage.setPageType("0");
+                cmsPage.setDataUrl("http://localhost:31001/cms/page/get/620e07a816dc90170c3a5d68");
 
-                findCmsPage.setSiteId("5a751fab6abb5044e0d19ea1");
-                findCmsPage.setTemplateId(templateId);
-                findCmsPage.setPageCreateTime(new Date());
-                findCmsPage.setPageName(strings[0]+".html");
-                findCmsPage.setPageAliase("han_test");
-                findCmsPage.setPagePhysicalPath(strings[1]);
-                findCmsPage.setPageType("0");
-                findCmsPage.setDataUrl("http://localhost:31001/cms/page/get/620e07a816dc90170c3a5d68");
-
-                CmsPage save = cmsPageRepository.save(findCmsPage);
+                CmsPage save = cmsPageRepository.save(cmsPage);
                 if (save!=null){
                     System.out.println("save success");
                 }
@@ -129,7 +131,7 @@ public class GridFSTest {
         int i = filePath.lastIndexOf("\\");
         int i1 = filePath.lastIndexOf(".");
         String fileName = filePath.substring(i+1,i1);
-        String[] strings = new String[]{};
+        String[] strings = new String[2];
         strings[0] = fileName;//存入文件名
         String path = filePath.substring(0, i);
         strings[1] = path;

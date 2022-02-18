@@ -3,13 +3,16 @@ package com.xuecheng.manage_cms.dao;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.xuecheng.framework.domain.cms.CmsConfig;
 import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.CmsTemplate;
+import com.xuecheng.manage_cms.service.CmsConfigService;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
+import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,8 @@ public class FreemarkerTest {
     CmsPageRepository cmsPageRepository;
     @Autowired
     CmsTemplateRepository cmsTemplateRepository;
-
+    @Autowired
+    CmsConfigRepository cmsConfigRepository;
     @Autowired
     GridFsTemplate gridFsTemplate;
 
@@ -47,8 +51,10 @@ public class FreemarkerTest {
     @Autowired
     RestTemplate restTemplate;
 
-
-
+    @Test
+    public void allMain(){
+        testAll("620efd4816dc9004b882bbe1");
+    }
     /**
      * 页面发布
      * 1.首先将前端传过来的cmsPage进行添加更新，存在就更新，不存在就添加
@@ -87,40 +93,71 @@ public class FreemarkerTest {
      * 站点对象中的：siteDomain+siteWebPath
      * 保存成功的cmsPage中的：pageWebPath+pageName
      */
+
     public void testAll(String pageId) {
         //根据传入的pageId进行判断在cmsPage中是否存在page
         Optional<CmsPage> optionalCmsPage = cmsPageRepository.findById(pageId);
         if (optionalCmsPage.isPresent()) {
             CmsPage cmsPage = optionalCmsPage.get();
+            /////////////////////获取远程模型数据
             //获取模型数据地址
             String dataUrl = cmsPage.getDataUrl();
             //远程获取模型数据
             ResponseEntity<Map> forEntity = restTemplate.getForEntity(dataUrl, Map.class);
+            Map body = forEntity.getBody();
+
+            /////////////////获取模板信息
             //获取模板信息id
             String templateId = cmsPage.getTemplateId();
-
             //获取templateFileId
             Optional<CmsTemplate> optional = cmsTemplateRepository.findById(templateId);
             String templateFileId = "";
-            if (optional.isPresent()){
+            if (optional.isPresent()) {
                 CmsTemplate cmsTemplate = optional.get();
-                 templateFileId = cmsTemplate.getTemplateFileId();
+                templateFileId = cmsTemplate.getTemplateFileId();
             }
+            String templateData = "";
             //查询文件
             GridFSFile gridFSFile = gridFsTemplate.findOne(Query.query(Criteria.where("_id").is(templateFileId)));
             //创建下载对象
             GridFSDownloadStream gridFSDownloadStream = gridFSBucket.openDownloadStream(gridFSFile.getId());
-            GridFsResource gridFsResource = new GridFsResource(gridFSFile,gridFSDownloadStream);
-            //从流中取数据
+            GridFsResource gridFsResource = new GridFsResource(gridFSFile, gridFSDownloadStream);
             try {
-                String content = IOUtils.toString(gridFsResource.getInputStream(), "utf-8");
-            } catch (IOException e) {
+                //从流中取数据
+                templateData = IOUtils.toString(gridFsResource.getInputStream(), "utf-8");
+                ///////////////执行静态化
+                //生成配置类
+                Configuration configuration = new Configuration(Configuration.getVersion());
+                //模板加载器
+                StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+                stringTemplateLoader.putTemplate("templateData", templateData);
+                //配置模板加载器
+                configuration.setTemplateLoader(stringTemplateLoader);
+
+                Template template = null;
+                String html = "";
+                //获取模板
+                template = configuration.getTemplate("templateData");
+                //执行静态化
+
+                html = FreeMarkerTemplateUtils.processTemplateIntoString(template, body);
+
+                ///////////将生成的页面存储到GridFS中
+                //将生成的html数据转换成流对象
+                InputStream inputStream = IOUtils.toInputStream(html, "utf-8");
+                //将html对象存储到GridsFS
+                ObjectId objectId = gridFsTemplate.store(inputStream, cmsPage.getPageName());
+
+                //给cmsPage设置存储的页面id
+                cmsPage.setHtmlFileId(objectId.toHexString());
+                //保存更新mongodb数据
+                cmsPageRepository.save(cmsPage);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
     }
-
 
 
     public String freemarkerTest() throws Exception {
@@ -196,5 +233,11 @@ public class FreemarkerTest {
         //获取流中的数据
         String s = IOUtils.toString(gridFsResource.getInputStream(), "UTF-8");
         return s;
+    }
+
+
+    public void addModel(){
+        CmsConfig cmsConfig = new CmsConfig();
+
     }
 }
