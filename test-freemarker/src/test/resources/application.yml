@@ -1,0 +1,11 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: test-freemarker
+  data:
+    mongodb:
+        uri:  mongodb://root:Han#222@47.100.77.11:27017
+        #uri:  mongodb://test:root@129.211.15.108:27017
+        #uri:  mongodb://root:123@localhost:27017
+        database: xc_cms

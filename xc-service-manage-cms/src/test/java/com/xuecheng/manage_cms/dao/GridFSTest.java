@@ -5,6 +5,7 @@ import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.CmsTemplate;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -90,6 +91,9 @@ public class GridFSTest {
 //            FileInputStream fileInputStream = new FileInputStream(f);
             //向GridFS存储文件
             ObjectId objectId = gridFsTemplate.store(fileInputStream, "han",null,null);
+            if (objectId==null){
+                throw new NullPointerException("存储模板失败");
+            }
             String templateFileId = objectId.toHexString();
             //更新cmsTemplate
             Optional<CmsTemplate> byId = cmsTemplateRepository.findById(templateFileId);
@@ -114,14 +118,20 @@ public class GridFSTest {
                 cmsPage.setPageAliase("han_test");
                 cmsPage.setPagePhysicalPath(strings[1]);
                 cmsPage.setPageType("0");
-                cmsPage.setDataUrl("http://localhost:31001/cms/page/get/620e07a816dc90170c3a5d68");
+//                cmsPage.setDataUrl("http://localhost:31001/cms/page/get/620e07a816dc90170c3a5d68");
+                cmsPage.setDataUrl("http://localhost:8088/freemarker/getmodel/62173f8016dc9024b46b0157");
 
                 CmsPage save = cmsPageRepository.save(cmsPage);
                 if (save!=null){
                     System.out.println("save success");
                 }
+            }else {
+                findCmsPage.setDataUrl("http://localhost:8088/freemarker/getmodel/62173f8016dc9024b46b0157");
+                findCmsPage.setTemplateId(templateId);
+                CmsPage save = cmsPageRepository.save(findCmsPage);
+                System.out.println("页面id："+save.getPageId());
             }
-
+            System.out.println("模板文件id："+templateFileId+"\n"+"模板id："+templateId+"\n");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

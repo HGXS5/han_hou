@@ -1,0 +1,16 @@
+Index: xc-service-manage-cms/src/test/java/com/xuecheng/manage_cms/dao/GridFSTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- xc-service-manage-cms/src/test/java/com/xuecheng/manage_cms/dao/GridFSTest.java	(revision bdc7b60d8ea03c496e1ba307c5fbbc2778c2159c)
++++ xc-service-manage-cms/src/test/java/com/xuecheng/manage_cms/dao/GridFSTest.java	(date 1645688582479)
+@@ -114,7 +114,7 @@
+                 cmsPage.setPageAliase("han_test");
+                 cmsPage.setPagePhysicalPath(strings[1]);
+                 cmsPage.setPageType("0");
+-                cmsPage.setDataUrl("http://localhost:31001/cms/page/get/620e07a816dc90170c3a5d68");
++//                cmsPage.setDataUrl("http://localhost:31001/cms/page/get/620e07a816dc90170c3a5d68");
+ 
+                 CmsPage save = cmsPageRepository.save(cmsPage);
+                 if (save!=null){
