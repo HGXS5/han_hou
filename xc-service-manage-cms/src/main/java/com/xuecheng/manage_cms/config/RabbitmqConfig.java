@@ -11,7 +11,7 @@ public class RabbitmqConfig {
     public static final String EX_ROUTING_CMS_POSTPAGE="ex_routing_cms_postpage";
 
     /**
-     * 交换机配置使用direct类型
+     * 交换机配置使用direct类型----路由模式
      * @return the exchange
      */
     @Bean(EX_ROUTING_CMS_POSTPAGE)

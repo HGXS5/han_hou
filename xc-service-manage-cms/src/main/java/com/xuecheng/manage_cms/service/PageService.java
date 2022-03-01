@@ -307,6 +307,11 @@ public class PageService {
         //将页面静态化文件存储到GridFs中
         CmsPage cmsPage = saveHtml(pageId, pageHtml);
         //向MQ发消息
+        /**
+         * 1.创建一个交换机
+         * 2.将站点id看成队列名称
+         * 3.将页面id放进map里面转换成json串并发送到mq中
+         */
         sendPostPage(pageId);
         return new ResponseResult(CommonCode.SUCCESS);
     }
