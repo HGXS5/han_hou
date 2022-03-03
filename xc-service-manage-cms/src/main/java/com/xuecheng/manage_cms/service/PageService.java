@@ -374,7 +374,6 @@ public class PageService {
         //发送给mq
         //站点id
         String siteId = cmsPage.getSiteId();
-        System.out.println(siteId);
         rabbitTemplate.convertAndSend(RabbitmqConfig.EX_ROUTING_CMS_POSTPAGE,siteId,jsonString);
     }
 
