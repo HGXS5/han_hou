@@ -360,7 +360,7 @@ public class PageService {
     }
 
     //向mq 发送消息
-    private void sendPostPage(String pageId){
+    public void sendPostPage(String pageId){
         //得到页面信息
         CmsPage cmsPage = this.getById(pageId);
         if(cmsPage == null){
@@ -374,6 +374,7 @@ public class PageService {
         //发送给mq
         //站点id
         String siteId = cmsPage.getSiteId();
+        System.out.println(siteId);
         rabbitTemplate.convertAndSend(RabbitmqConfig.EX_ROUTING_CMS_POSTPAGE,siteId,jsonString);
     }
 
