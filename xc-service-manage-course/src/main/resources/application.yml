@@ -6,7 +6,7 @@ spring:
   datasource:
     druid:
       url: jdbc:mysql://47.100.77.11:3306/xc_course?characterEncoding=utf-8
-      username: han
+      username: root
       password: Han#222
       driverClassName: com.mysql.jdbc.Driver
       initialSize: 5  #初始建立连接数量

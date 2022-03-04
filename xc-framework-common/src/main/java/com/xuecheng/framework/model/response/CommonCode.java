@@ -11,7 +11,6 @@ import lombok.ToString;
 
 @ToString
 public enum CommonCode implements ResultCode{
-
     SUCCESS(true,10000,"操作成功！"),
     FAIL(false,11111,"操作失败！"),
     FAILEXIST(false,11112,"老弟，你点错了!!!"),
