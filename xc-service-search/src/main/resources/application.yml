@@ -1,0 +1,12 @@
+server:
+  port: ${port:40100}
+spring:
+  application:
+    name: xc-search-service
+xuecheng:
+  elasticsearch:
+    #${key:}表示的是首先获取key的值，获取不到才会使用":"后面的默认值。
+    #这个key一般就是在启动该jar时候，传递的参数
+    #eg:
+      #java -jar -eshostlist=172.16.0.36  xxx.jar
+    hostlist: ${eshostlist:47.100.77.11:9200} #多个结点中间用逗号分隔,
