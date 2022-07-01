@@ -17,5 +17,5 @@ spring:
     virtualHost: /
 xuecheng:
   mq:
-    queue: queue_cms_postpage_01
+    queue: queue_cms_postpage_02
     routingKey: 5a751fab6abb5044e0d19ea1

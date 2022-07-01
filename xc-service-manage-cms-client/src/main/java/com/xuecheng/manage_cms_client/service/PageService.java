@@ -42,7 +42,8 @@ public class PageService {
         //页面所属站点
         CmsSite cmsSite = getCmsSiteById(cmsPage.getSiteId());
         //页面物理路径
-        String pagePath = cmsSite.getSitePhysicalPath() + cmsPage.getPagePhysicalPath() + cmsPage.getPageName();
+//        String pagePath = cmsSite.getSitePhysicalPath() + cmsPage.getPagePhysicalPath() + cmsPage.getPageName();
+        String path = "C:\\Users\\han_s\\Downloads\\index.html";
         //查询页面静态文件
         String htmlFileId = cmsPage.getHtmlFileId();
         InputStream inputStream = getFileById(htmlFileId);
@@ -51,8 +52,17 @@ public class PageService {
         }
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(new File(pagePath));
-            IOUtils.copy(inputStream, fileOutputStream);
+
+            File file = new File(path);
+            if (file.exists()){
+                fileOutputStream = new FileOutputStream(file);
+                IOUtils.copy(inputStream, fileOutputStream);
+            }else {
+                file.createNewFile();
+                fileOutputStream = new FileOutputStream(file);
+                IOUtils.copy(inputStream, fileOutputStream);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
